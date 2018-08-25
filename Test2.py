@@ -20,18 +20,22 @@ def main():
     # Load a JPG image file.
     #
 
-    image = cv2.imread('IMG_4870.jpg')     # numpy.ndarray, ndim = 3
+    image = cv2.imread('IMG_4871.jpg')     # numpy.ndarray, ndim = 3
     grayImage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) # ndim = 2
 
     fig, axes = plt.subplots(
                   ncols=1, 
-                  nrows=3)
+                  nrows=4)
 
-    ax0, ax1, ax2  = axes.flat
+    ax0, ax1, ax2, ax3  = axes.flat
 
-    ax0.imshow(grayImage, cmap=plt.cm.gray)
+    ax0.imshow(image)
     ax0.set_title('Origin', fontsize=12)
-    ax0.axis('off')
+    ax0.axis('off')    
+
+    ax1.imshow(grayImage, cmap=plt.cm.gray)
+    ax1.set_title('Gray', fontsize=12)
+    ax1.axis('off')
 
     edges = canny(
               grayImage, 
@@ -39,15 +43,15 @@ def main():
               low_threshold=10,
               high_threshold=80)
 
-    ax1.imshow(edges, cmap=plt.cm.gray)
-    ax1.set_title('Edges', fontsize=12)
-    ax1.axis('off')
+    ax2.imshow(edges, cmap=plt.cm.gray)
+    ax2.set_title('Edges', fontsize=12)
+    ax2.axis('off')
 
     label_image = label(edges)
 
-    ax2.imshow(grayImage, cmap=plt.cm.gray)
-    ax2.set_title('Labeled items', fontsize=12)
-    ax2.axis('off')
+    ax3.imshow(image)
+    ax3.set_title('Labeled items', fontsize=12)
+    ax3.axis('off')
 
     for region in regionprops(label_image):
         # Draw rectangle around segmented coins.
@@ -59,7 +63,7 @@ def main():
                 fill=False,
                 edgecolor='red',
                 linewidth=2)
-        ax2.add_patch(rect)
+        ax3.add_patch(rect)
 
     #plt.tight_layout()
     plt.show()
