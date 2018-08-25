@@ -40,9 +40,9 @@ def main():
 
     edges = canny(
               grayImage, 
-              sigma=3,
-              low_threshold=10,
-              high_threshold=80)
+              sigma=1, # 3
+              low_threshold=20, # 10
+              high_threshold=40) # 80
 
     ax2.imshow(edges, cmap=plt.cm.gray)
     ax2.set_title('Edges', fontsize=12)
