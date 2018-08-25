@@ -14,37 +14,46 @@ from skimage.morphology import label
 # Load a small section of the image.
 image = data.coins()[0:95, 70:370]
 
-fig, axes = plt.subplots(ncols=2, nrows=1,
-                         figsize=(8, 4))
+fig, axes = plt.subplots(
+              ncols=1, 
+              nrows=3,
+              figsize=(8, 4))
 
-ax4, ax5  = axes.flat
+ax0, ax1, ax2  = axes.flat
+
+ax0.imshow(image, cmap=plt.cm.gray)
+ax0.set_title('Origin', fontsize=12)
+ax0.axis('off')
 
 from skimage.feature import canny
 
-edges = canny(image, sigma=3,
-                     low_threshold=10,
-                     high_threshold=80)
+edges = canny(
+          image, 
+          sigma=3,
+          low_threshold=10,
+          high_threshold=80)
 
-ax4.imshow(edges, cmap=plt.cm.gray)
-ax4.set_title('Edges', fontsize=24)
-ax4.axis('off')
+ax1.imshow(edges, cmap=plt.cm.gray)
+ax1.set_title('Edges', fontsize=12)
+ax1.axis('off')
 
 label_image = label(edges)
 
-ax5.imshow(image, cmap=plt.cm.gray)
-ax5.set_title('Labeled items', fontsize=24)
-ax5.axis('off')
+ax2.imshow(image, cmap=plt.cm.gray)
+ax2.set_title('Labeled items', fontsize=12)
+ax2.axis('off')
 
 for region in regionprops(label_image):
     # Draw rectangle around segmented coins.
     minr, minc, maxr, maxc = region.bbox
-    rect = mpatches.Rectangle((minc, minr),
-                              maxc - minc,
-                              maxr - minr,
-                              fill=False,
-                              edgecolor='red',
-                              linewidth=2)
-    ax5.add_patch(rect)
+    rect = mpatches.Rectangle(
+            (minc, minr),
+            maxc - minc,
+            maxr - minr,
+            fill=False,
+            edgecolor='red',
+            linewidth=2)
+    ax2.add_patch(rect)
 
 #plt.tight_layout()
 plt.show()
