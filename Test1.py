@@ -16,7 +16,7 @@ from skimage.feature import canny
 def main():
 
     # Load a small section of the image.
-    image = data.coins()[0:95, 70:370]      # numpy.ndarray
+    image = data.coins()[0:95, 70:370]      # numpy.ndarray, image.ndim = 2
 
     fig, axes = plt.subplots(
                   ncols=1, 
@@ -28,8 +28,6 @@ def main():
     ax0.imshow(image, cmap=plt.cm.gray)
     ax0.set_title('Origin', fontsize=12)
     ax0.axis('off')
-
-
 
     edges = canny(
               image, 
