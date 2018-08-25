@@ -26,9 +26,9 @@ def main():
 
     fig, axes = plt.subplots(
                   ncols=1, 
-                  nrows=4)
+                  nrows=5)
 
-    ax0, ax1, ax2, ax3  = axes.flat
+    ax0, ax1, ax2, ax3, ax4  = axes.flat
 
     ax0.imshow(image)
     ax0.set_title('Origin', fontsize=12)
@@ -38,24 +38,38 @@ def main():
     ax1.set_title('Gray', fontsize=12)
     ax1.axis('off')
 
+    '''
     edges = canny(
               grayImage, 
-              sigma=1, # 3
+              sigma=2, # 3
               low_threshold=20, # 10
               high_threshold=40) # 80
+    '''
+    edges = canny(grayImage, sigma=2)
 
     ax2.imshow(edges, cmap=plt.cm.gray)
     ax2.set_title('Edges', fontsize=12)
     ax2.axis('off')
 
-    label_image = label(edges)
+    label_image = label(edges)          # ndarray
+
+    #
+    # ax3
+    #
 
     ax3.imshow(image)
     ax3.set_title('Labeled items', fontsize=12)
     ax3.axis('off')
 
+    count = 0
     for region in regionprops(label_image):
-        # Draw rectangle around segmented coins.
+
+        print ("region = %s, %s" % (region.area, region.bbox))
+        
+        #
+        # Draw rectangle around segmented objects.
+        #
+
         minr, minc, maxr, maxc = region.bbox
         rect = mpatches.Rectangle(
                 (minc, minr),
@@ -64,8 +78,50 @@ def main():
                 fill=False,
                 edgecolor='red',
                 linewidth=2)
+        print ("rect = %s" % rect)
         ax3.add_patch(rect)     
-    
+        count += 1
+    print ("count = ", count)
+
+    #
+    # Filter regions.
+    #
+
+    regions = []
+    count = 0
+    for region in regionprops(label_image):
+        if region.area <= 30:
+            continue
+        count += 1    
+        print ("region = %s, %s" % (region.area, region.bbox))
+        regions.append(region)        
+
+
+    #
+    # ax4
+    #
+
+    ax4.imshow(image)
+    ax4.set_title('Labeled items filtered', fontsize=12)
+    ax4.axis('off')
+
+    for region in regions:
+
+        #
+        # Draw rectangle around segmented objects.
+        #        
+
+        minr, minc, maxr, maxc = region.bbox
+        rect = mpatches.Rectangle(
+                (minc, minr),
+                maxc - minc,
+                maxr - minr,
+                fill=False,
+                edgecolor='red',
+                linewidth=2)
+        print ("rect = %s" % rect)
+        ax4.add_patch(rect)     
+
     #plt.tight_layout()
     plt.show()
 
