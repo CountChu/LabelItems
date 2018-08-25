@@ -14,6 +14,42 @@ from skimage.morphology import label
 
 from skimage.feature import canny
 
+def overlappedSegment(x1, x2, x3, x4):
+    if max(x1, x2) - min(x3, x4) >= 0 and max(x3, x4) - min(x1, x2) >= 0:
+        return True
+    return False
+
+def overlappedArea(box1, box2):
+    print (box1)
+    print (box2)
+    (x1, y1, x2, y2) = box1
+    (x3, y3, x4, y4) = box2
+    if overlappedSegment(x1, x2, x3, x4) and overlappedSegment(y1, y2, y3, y4):
+        return True
+
+    return False
+
+def mergeArea(box1, box2):
+    (x1, y1, x2, y2) = box1
+    (x3, y3, x4, y4) = box2
+    newX1 = min(x1, x2, x3, x4)
+    newX2 = max(x1, x2, x3, x4)
+    newY1 = min(y1, y2, y3, y4)
+    newY2 = max(y1, y2, y3, y4)
+    return (newX1, newY1, newX2, newY2)
+
+def findOverlappedRegions(boxList):
+    for i in range(0, len(boxList) - 1):
+        for j in range(1, len(boxList)):
+            if i < j:
+                print ("%d, %d" % (i, j))
+                [box1, merged1] = boxList[i]
+                [box2, merged2] = boxList[j]
+                if not merged1 and not merged2:
+                    if overlappedArea(box1, box2):
+                        return (i, j)
+    return None    
+
 def main():
 
     #
@@ -26,9 +62,9 @@ def main():
 
     fig, axes = plt.subplots(
                   ncols=1, 
-                  nrows=5)
+                  nrows=6)
 
-    ax0, ax1, ax2, ax3, ax4  = axes.flat
+    ax0, ax1, ax2, ax3, ax4, ax5  = axes.flat
 
     ax0.imshow(image)
     ax0.set_title('Origin', fontsize=12)
@@ -105,6 +141,7 @@ def main():
     ax4.set_title('Labeled items filtered', fontsize=12)
     ax4.axis('off')
 
+    print("len(regions) = %d" % len(regions))
     for region in regions:
 
         #
@@ -120,7 +157,64 @@ def main():
                 edgecolor='red',
                 linewidth=2)
         print ("rect = %s" % rect)
-        ax4.add_patch(rect)     
+        ax4.add_patch(rect) 
+
+    #
+    # Transform regions to boxList
+    #     
+
+    boxList = []
+    for region in regions:
+        boxList.append([region.bbox, False])
+
+    #
+    # merge overlapped boxList.
+    #    
+
+    while True:
+        result = findOverlappedRegions(boxList)
+        if result == None:
+            break
+
+        (i, j) = result
+        [box1, merged1] = boxList[i]
+        [box2, merged2] = boxList[j]
+        box = mergeArea(box1, box2)
+        print ("box = %s" % str(box))
+        boxList[i][1] = True
+        boxList[j][1] = True
+        boxList.append([box, False])
+
+    for box in boxList:
+        print(box)
+
+    #
+    # ax5
+    #
+
+    ax5.imshow(image)
+    ax5.set_title('Labeled items filtered', fontsize=12)
+    ax5.axis('off')
+
+    for [box, merged] in boxList:
+        if merged:
+            continue
+
+
+        #
+        # Draw rectangle around segmented objects.
+        #        
+
+        (minr, minc, maxr, maxc) = box
+        rect = mpatches.Rectangle(
+                (minc, minr),
+                maxc - minc,
+                maxr - minr,
+                fill=False,
+                edgecolor='red',
+                linewidth=2)
+        print ("rect = %s" % rect)
+        ax5.add_patch(rect)          
 
     #plt.tight_layout()
     plt.show()
