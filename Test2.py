@@ -21,7 +21,8 @@ def main():
     #
 
     image = cv2.imread('IMG_4871.jpg')     # numpy.ndarray, ndim = 3
-    grayImage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) # ndim = 2
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) # BGR to RGB for right color.
+    grayImage = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY) # RGB to GRAY, ndim = 2
 
     fig, axes = plt.subplots(
                   ncols=1, 
@@ -63,8 +64,8 @@ def main():
                 fill=False,
                 edgecolor='red',
                 linewidth=2)
-        ax3.add_patch(rect)
-
+        ax3.add_patch(rect)     
+    
     #plt.tight_layout()
     plt.show()
 
