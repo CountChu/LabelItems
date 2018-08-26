@@ -80,8 +80,11 @@ def main():
     processFn = dstFn + "-Process" + ext
     print ("processFn = "+processFn)
 
-    labelFn = dstFn + "-Label" + ext
-    print ("labelFn = "+labelFn)
+    dstFn1 = dstFn + "-1" + ext
+    dstFn2 = dstFn + "-2" + ext
+    dstFn3 = dstFn + "-3" + ext
+    dstFn4 = dstFn + "-4" + ext
+    dstFn5 = dstFn + "-5" + ext                
 
     #
     # Parse arguments.
@@ -125,8 +128,8 @@ def main():
     #
 
 
-    grayImage = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY) # RGB to GRAY, ndim = 2
-    #cv2.imwrite(labelFn, grayImage)
+    image2 = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY) # RGB to GRAY, ndim = 2
+    cv2.imwrite(dstFn1, image2)
 
     #
     # Display.
@@ -153,7 +156,7 @@ def main():
     # ax1 - Gray
     #
 
-    ax1.imshow(grayImage, cmap=plt.cm.gray)
+    ax1.imshow(image2, cmap=plt.cm.gray)
     ax1.set_title('Gray', fontsize=fontSize)
     ax1.axis('off')
 
@@ -162,12 +165,12 @@ def main():
     #
 
     edges = skimage.feature.canny(
-              grayImage, 
+              image2, 
               sigma=2, # 3
               low_threshold=0, # 10
               high_threshold=15) # 80
-    #edges = canny(grayImage, sigma=2)
-    #cv2.imwrite(labelFn, edges)
+    #edges = canny(image2, sigma=2)
+    #cv2.imwrite(dstFn2, edges)
 
     #
     # ax2 - Edges
@@ -180,13 +183,10 @@ def main():
     label_image = skimage.morphology.label(edges)          # ndarray
 
     #
-    # ax3 - Label Items
+    # Label image.
     #
 
-    ax3.imshow(image)
-    ax3.set_title('Labeled Items', fontsize=fontSize)
-    ax3.axis('off')
-
+    image3 = image.copy()
     count = 0
     for region in skimage.measure.regionprops(label_image):
 
@@ -197,20 +197,28 @@ def main():
         #
 
         minr, minc, maxr, maxc = region.bbox
-        rect = mpatches.Rectangle(
-                (minc, minr),
-                maxc - minc,
-                maxr - minr,
-                fill=False,
-                edgecolor='red',
-                linewidth=2)
-        print ("rect = %s" % rect)
-        ax3.add_patch(rect)     
-        #image.set_clip_patch(rect)
+
+        cv2.rectangle (
+            image3,
+            (minc, minr),
+            (maxc, maxr),
+            (0, 255, 0),
+            2)
+        
         count += 1
 
-    #cv2.imwrite(labelFn, image)
-    print ("count = ", count)
+    print ("count = ", count)  
+    cv2.imwrite(dstFn3, image3)      
+
+    #
+    # ax3 - Label Items
+    #        
+
+    ax3.imshow(image3)
+    ax3.set_title('Labeled Items', fontsize=fontSize)
+    ax3.axis('off')        
+
+
 
     #
     # Filter regions.
@@ -241,33 +249,44 @@ def main():
             continue
         count += 1    
         print ("region = %s, %s" % (region.area, region.bbox))
-        regions.append(region)        
+        regions.append(region)      
+
+    #
+    # Label image again.
+    #      
+
+    image4 = image.copy()
+    count = 0
+    for region in regions:
+
+        print ("region = %s, %s" % (region.area, region.bbox))
+        
+        #
+        # Draw rectangle around segmented objects.
+        #
+
+        minr, minc, maxr, maxc = region.bbox
+
+        cv2.rectangle (
+            image4,
+            (minc, minr),
+            (maxc, maxr),
+            (0, 255, 0),
+            2)
+        
+        count += 1    
+
+
+    print ("count = ", count)  
+    cv2.imwrite(dstFn4, image4)             
 
     #
     # ax4 - Labeled Items Filtered
     #
 
-    ax4.imshow(image)
+    ax4.imshow(image4)
     ax4.set_title('Labeled Items Filtered', fontsize=fontSize)
     ax4.axis('off')
-
-    print("len(regions) = %d" % len(regions))
-    for region in regions:
-
-        #
-        # Draw rectangle around segmented objects.
-        #        
-
-        minr, minc, maxr, maxc = region.bbox
-        rect = mpatches.Rectangle(
-                (minc, minr),
-                maxc - minc,
-                maxr - minr,
-                fill=False,
-                edgecolor='red',
-                linewidth=2)
-        print ("rect = %s" % rect)
-        ax4.add_patch(rect) 
 
     #
     # Transform regions to boxList
@@ -299,33 +318,37 @@ def main():
         print(box)
 
     #
-    # ax5 - Labeld Items Merged
-    #
+    # Label image finally.
+    #    
 
-    ax5.imshow(image)
-    ax5.set_title('Labeled Items Merged', fontsize=fontSize)
-    ax5.axis('off')
+    image5 = image.copy()
 
     for [box, merged] in boxList:
         if merged:
             continue
 
-
         #
         # Draw rectangle around segmented objects.
-        #        
+        #
 
-        (minr, minc, maxr, maxc) = box
-        rect = mpatches.Rectangle(
-                (minc, minr),
-                maxc - minc,
-                maxr - minr,
-                fill=False,
-                edgecolor='red',
-                linewidth=2)
-        print ("rect = %s" % rect)
-        ax5.add_patch(rect)          
+        minr, minc, maxr, maxc = box
 
+        cv2.rectangle (
+            image5,
+            (minc, minr),
+            (maxc, maxr),
+            (0, 255, 0),
+            2)      
+
+    cv2.imwrite(dstFn5, image5)                   
+
+    #
+    # ax5 - Labeld Items Merged
+    #
+
+    ax5.imshow(image5)
+    ax5.set_title('Labeled Items Merged', fontsize=fontSize)
+    ax5.axis('off')
     
     if cfg['p']:
         plt.savefig(processFn)    

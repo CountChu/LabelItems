@@ -14,7 +14,12 @@ im = np.array(Image.open('hubble_friday_12102015.jpg'), dtype=np.uint8)
 # Create figure and axes
 fig,ax = plt.subplots(1)
 
-cv2.rectangle(im,(384,0),(510,128),(0,255,0),3)
+cv2.rectangle(
+	im,
+	(384,0),
+	(510,128),
+	(0,255,0),
+	3)
 cv2.imwrite('output.jpg', im)
 
 # Display the image
