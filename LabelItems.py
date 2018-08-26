@@ -127,18 +127,18 @@ def main():
             ["help", "show", "process"])
     except getopt.GetoptError as err:
         print(str(err))
-        usage()
+        help()
         sys.exit(0)
         
     for o, a in opts:
         if o in ('-h', '--help'):
             cfg['h'] = True
-        elif o in ('-s', '--show'):
-            cfg['s'] = True
         elif o in ('-p', '--process'):
             cfg['p'] = True
+        elif o in ('-s', '--show'):
+            cfg['s'] = True
         else:
-            usage()
+            help()
             sys.exit(0)
 
     #
@@ -153,75 +153,26 @@ def main():
     #
 
 
-    image2 = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY) # RGB to GRAY, ndim = 2
-    cv2.imwrite(dstFn1, image2)
+    image1 = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY) # RGB to GRAY, ndim = 2
 
-    #
-    # Display.
-    #
-
-    fontSize = 10
-
-
-    fig, axes = plt.subplots(
-                  ncols=3, 
-                  nrows=2)
-
-    ax0, ax1, ax2, ax3, ax4, ax5  = axes.flat
-
-    #
-    # ax0 - Origin
-    #
-
-    ax0.imshow(image)
-    ax0.set_title('Origin', fontsize=fontSize)
-    ax0.axis('off')    
-
-    #
-    # ax1 - Gray
-    #
-
-    ax1.imshow(image2, cmap=plt.cm.gray)
-    ax1.set_title('Gray', fontsize=fontSize)
-    ax1.axis('off')
 
     #
     # Get edges.
     #
 
     edges = skimage.feature.canny(
-              image2, 
+              image1, 
               sigma=2, # 3
               low_threshold=0, # 10
               high_threshold=15) # 80
-    #edges = canny(image2, sigma=2)
+    #edges = canny(image1, sigma=2)
     #cv2.imwrite(dstFn2, edges)
-
-    #
-    # ax2 - Edges
-    #    
-
-    ax2.imshow(edges, cmap=plt.cm.gray)
-    ax2.set_title('Edges', fontsize=fontSize)
-    ax2.axis('off')
-
-    label_image = skimage.morphology.label(edges)          # ndarray
 
     #
     # Label image.
     #
 
-    boxList = [region.bbox for region in skimage.measure.regionprops(label_image)]
-    image3 = labelImage(boxList, image)
-    cv2.imwrite(dstFn3, image3)      
-
-    #
-    # ax3 - Label Items
-    #        
-
-    ax3.imshow(image3)
-    ax3.set_title('Labeled Items', fontsize=fontSize)
-    ax3.axis('off')        
+    label_image = skimage.morphology.label(edges)          # ndarray    
 
     #
     # Filter regions.
@@ -233,7 +184,7 @@ def main():
         maxRegionArea = max(maxRegionArea, regionArea)
     print ("maxRegionArea = ", maxRegionArea)
 
-    boxList = []
+    boxList4 = []
     count = 0
     imageArea = image.shape[0] * image.shape[1]
     for region in skimage.measure.regionprops(label_image):
@@ -252,29 +203,14 @@ def main():
             continue
         count += 1    
         print ("region = %s, %s" % (region.area, region.bbox))
-        boxList.append(region.bbox)      
+        boxList4.append(region.bbox)      
 
     #
-    # Label image again.
-    #      
-
-    image4 = labelImage(boxList, image)
-    cv2.imwrite(dstFn4, image4)             
-
-    #
-    # ax4 - Labeled Items Filtered
-    #
-
-    ax4.imshow(image4)
-    ax4.set_title('Labeled Items Filtered', fontsize=fontSize)
-    ax4.axis('off')
-
-    #
-    # Transform boxList to boxFlagList
+    # Transform boxList4 to boxFlagList
     #     
 
     boxFlagList = []
-    for box in boxList:
+    for box in boxList4:
         boxFlagList.append([box, False])
 
     #
@@ -298,32 +234,104 @@ def main():
     for box in boxFlagList:
         print(box)
 
-    boxList = []
+    boxList5 = []
     for [box, merged] in boxFlagList:
         if merged:
             continue
-        boxList.append(box)        
+        boxList5.append(box)        
 
     #
     # Label image finally.
     #    
 
-    image5 = labelImage(boxList, image)
-    cv2.imwrite(dstFn5, image5)                   
+    image5 = labelImage(boxList5, image)
+    cv2.imwrite(dstFn5, image5)   
 
     #
-    # ax5 - Labeld Items Merged
+    # Handle --process
     #
 
-    ax5.imshow(image5)
-    ax5.set_title('Labeled Items Merged', fontsize=fontSize)
-    ax5.axis('off')
-    
     if cfg['p']:
+
+        #
+        # Save images.
+        #
+
+        cv2.imwrite(dstFn1, image1)
+
+        boxList = [region.bbox for region in skimage.measure.regionprops(label_image)]
+        image3 = labelImage(boxList, image)
+        cv2.imwrite(dstFn3, image3)   
+
+        image4 = labelImage(boxList4, image)
+        cv2.imwrite(dstFn4, image4) 
+        
+        #
+        # Display.
+        #
+
+        fontSize = 10
+
+
+        fig, axes = plt.subplots(
+                      ncols=3, 
+                      nrows=2)
+
+        ax0, ax1, ax2, ax3, ax4, ax5  = axes.flat
+
+        #
+        # ax0 - Origin
+        #
+
+        ax0.imshow(image)
+        ax0.set_title('Origin', fontsize=fontSize)
+        ax0.axis('off')    
+
+        #
+        # ax1 - Gray
+        #
+
+        ax1.imshow(image1, cmap=plt.cm.gray)
+        ax1.set_title('Gray', fontsize=fontSize)
+        ax1.axis('off')
+
+        #
+        # ax2 - Edges
+        #    
+
+        ax2.imshow(edges, cmap=plt.cm.gray)
+        ax2.set_title('Edges', fontsize=fontSize)
+        ax2.axis('off')      
+            
+        #
+        # ax3 - Label Items
+        #        
+
+        ax3.imshow(image3)
+        ax3.set_title('Labeled Items', fontsize=fontSize)
+        ax3.axis('off')            
+
+        #
+        # ax4 - Labeled Items Filtered
+        #
+
+        ax4.imshow(image4)
+        ax4.set_title('Labeled Items Filtered', fontsize=fontSize)
+        ax4.axis('off')  
+
+        #
+        # ax5 - Labeld Items Merged
+        #
+
+        ax5.imshow(image5)
+        ax5.set_title('Labeled Items Merged', fontsize=fontSize)
+        ax5.axis('off')
+    
         plt.savefig(processFn)    
     
 
     if cfg['s']:
+
         plt.show()
 
 
