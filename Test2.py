@@ -6,6 +6,7 @@ import cv2
 from skimage import data, io, filters
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
 # Label image regions.
 from skimage.measure import regionprops
@@ -42,7 +43,7 @@ def findOverlappedRegions(boxList):
     for i in range(0, len(boxList) - 1):
         for j in range(1, len(boxList)):
             if i < j:
-                print ("%d, %d" % (i, j))
+                #print ("%d, %d" % (i, j))
                 [box1, merged1] = boxList[i]
                 [box2, merged2] = boxList[j]
                 if not merged1 and not merged2:
@@ -50,19 +51,24 @@ def findOverlappedRegions(boxList):
                         return (i, j)
     return None    
 
+def getArea(box):
+    (x1, y1, x2, y2) = box
+    area = abs(x1-x2+1) * abs(y1-y2+1)
+    return area
+
 def main():
 
     #
     # Load a JPG image file.
     #
 
-    image = cv2.imread('IMG_4871.jpg')     # numpy.ndarray, ndim = 3
+    image = cv2.imread('IMG_4889.jpg')     # numpy.ndarray, ndim = 3
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) # BGR to RGB for right color.
     grayImage = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY) # RGB to GRAY, ndim = 2
 
     fig, axes = plt.subplots(
-                  ncols=1, 
-                  nrows=6)
+                  ncols=3, 
+                  nrows=2)
 
     ax0, ax1, ax2, ax3, ax4, ax5  = axes.flat
 
@@ -74,14 +80,12 @@ def main():
     ax1.set_title('Gray', fontsize=12)
     ax1.axis('off')
 
-    '''
     edges = canny(
               grayImage, 
               sigma=2, # 3
-              low_threshold=20, # 10
-              high_threshold=40) # 80
-    '''
-    edges = canny(grayImage, sigma=2)
+              low_threshold=0, # 10
+              high_threshold=15) # 80
+    #edges = canny(grayImage, sigma=2)
 
     ax2.imshow(edges, cmap=plt.cm.gray)
     ax2.set_title('Edges', fontsize=12)
@@ -123,15 +127,32 @@ def main():
     # Filter regions.
     #
 
+    maxRegionArea = 0
+    for region in regionprops(label_image):
+        regionArea = getArea(region.bbox)
+        maxRegionArea = max(maxRegionArea, regionArea)
+    print ("maxRegionArea = ", maxRegionArea)
+
     regions = []
     count = 0
+    imageArea = image.shape[0] * image.shape[1]
     for region in regionprops(label_image):
-        if region.area <= 30:
+        if region.area <= 70:
+            continue
+        
+        #
+        # 503 * 377
+        # image.shape = 504 * 378 = 190512
+        #
+
+        regionArea = getArea(region.bbox)
+        if regionArea > imageArea * 0.9:
+            print ("regionArea = ", regionArea)
+            print ("imageArea = ", imageArea)
             continue
         count += 1    
         print ("region = %s, %s" % (region.area, region.bbox))
         regions.append(region)        
-
 
     #
     # ax4
