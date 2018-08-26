@@ -217,7 +217,7 @@ def main():
     #
 
     maxRegionArea = 0
-    for region in regionprops(label_image):
+    for region in skimage.measure.regionprops(label_image):
         regionArea = getArea(region.bbox)
         maxRegionArea = max(maxRegionArea, regionArea)
     print ("maxRegionArea = ", maxRegionArea)
@@ -225,7 +225,7 @@ def main():
     regions = []
     count = 0
     imageArea = image.shape[0] * image.shape[1]
-    for region in regionprops(label_image):
+    for region in skimage.measure.regionprops(label_image):
         if region.area <= 70:
             continue
         
