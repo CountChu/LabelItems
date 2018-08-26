@@ -74,7 +74,7 @@ def labelImage(boxList, image):
             (minc, minr),
             (maxc, maxr),
             (0, 255, 0),
-            2)
+            4)
         
         count += 1
 
@@ -109,7 +109,9 @@ def main():
     dstFn2 = dstFn + "-2" + ext
     dstFn3 = dstFn + "-3" + ext
     dstFn4 = dstFn + "-4" + ext
-    dstFn5 = dstFn + "-5" + ext                
+    dstFn5 = dstFn + "-5" + ext  
+    dstFn6 = dstFn + "-6" + ext   
+    dstFn7 = dstFn + "-7" + ext                         
 
     #
     # Parse arguments.
@@ -246,6 +248,20 @@ def main():
 
     image5 = labelImage(boxList5, image)
     cv2.imwrite(dstFn5, image5)   
+
+    #
+    # Output regions in a background image.
+    #
+
+    image6 = image.copy()
+    image6.fill(0)
+    image6 = labelImage(boxList5, image6)    
+    cv2.imwrite(dstFn6, image6)     
+
+    image7 = image.copy()
+    image7.fill(255)
+    image7 = labelImage(boxList5, image7)    
+    cv2.imwrite(dstFn7, image7)         
 
     #
     # Handle --process
