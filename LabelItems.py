@@ -10,12 +10,10 @@ import sys
 import os
 import getopt
 
-# Label image regions.
-from skimage.measure import regionprops
 import matplotlib.patches as mpatches
-from skimage.morphology import label
-
-from skimage.feature import canny
+import skimage.feature
+import skimage.morphology
+import skimage.measure
 
 def overlappedSegment(x1, x2, x3, x4):
     if max(x1, x2) - min(x3, x4) >= 0 and max(x3, x4) - min(x1, x2) >= 0:
@@ -121,7 +119,14 @@ def main():
 
     image = cv2.imread(fn)     # numpy.ndarray, ndim = 3
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) # BGR to RGB for right color.
+    
+    #
+    # get grayed image.
+    #
+
+
     grayImage = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY) # RGB to GRAY, ndim = 2
+    #cv2.imwrite(labelFn, grayImage)
 
     #
     # Display.
@@ -153,21 +158,26 @@ def main():
     ax1.axis('off')
 
     #
-    # ax2 - Edges
+    # Get edges.
     #
 
-    edges = canny(
+    edges = skimage.feature.canny(
               grayImage, 
               sigma=2, # 3
               low_threshold=0, # 10
               high_threshold=15) # 80
     #edges = canny(grayImage, sigma=2)
+    #cv2.imwrite(labelFn, edges)
+
+    #
+    # ax2 - Edges
+    #    
 
     ax2.imshow(edges, cmap=plt.cm.gray)
     ax2.set_title('Edges', fontsize=fontSize)
     ax2.axis('off')
 
-    label_image = label(edges)          # ndarray
+    label_image = skimage.morphology.label(edges)          # ndarray
 
     #
     # ax3 - Label Items
@@ -178,7 +188,7 @@ def main():
     ax3.axis('off')
 
     count = 0
-    for region in regionprops(label_image):
+    for region in skimage.measure.regionprops(label_image):
 
         print ("region = %s, %s" % (region.area, region.bbox))
         
@@ -196,7 +206,10 @@ def main():
                 linewidth=2)
         print ("rect = %s" % rect)
         ax3.add_patch(rect)     
+        #image.set_clip_patch(rect)
         count += 1
+
+    #cv2.imwrite(labelFn, image)
     print ("count = ", count)
 
     #
