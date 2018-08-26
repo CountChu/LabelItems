@@ -56,6 +56,31 @@ def getArea(box):
     area = abs(x1-x2+1) * abs(y1-y2+1)
     return area
 
+def labelImage(boxList, image):
+    newImage = image.copy()
+    count = 0
+    for box in boxList:
+
+        print ("box = ", str(box))
+        
+        #
+        # Draw rectangle around segmented objects.
+        #
+
+        minr, minc, maxr, maxc = box
+
+        cv2.rectangle (
+            newImage,
+            (minc, minr),
+            (maxc, maxr),
+            (0, 255, 0),
+            2)
+        
+        count += 1
+
+    print ("count = ", count) 
+    return newImage
+
 def help():
     print ("Usage:")
     print ("    python LabelItems.py IMG_4889.jpg -s")    
@@ -186,28 +211,8 @@ def main():
     # Label image.
     #
 
-    image3 = image.copy()
-    count = 0
-    for region in skimage.measure.regionprops(label_image):
-
-        print ("region = %s, %s" % (region.area, region.bbox))
-        
-        #
-        # Draw rectangle around segmented objects.
-        #
-
-        minr, minc, maxr, maxc = region.bbox
-
-        cv2.rectangle (
-            image3,
-            (minc, minr),
-            (maxc, maxr),
-            (0, 255, 0),
-            2)
-        
-        count += 1
-
-    print ("count = ", count)  
+    boxList = [region.bbox for region in skimage.measure.regionprops(label_image)]
+    image3 = labelImage(boxList, image)
     cv2.imwrite(dstFn3, image3)      
 
     #
@@ -217,8 +222,6 @@ def main():
     ax3.imshow(image3)
     ax3.set_title('Labeled Items', fontsize=fontSize)
     ax3.axis('off')        
-
-
 
     #
     # Filter regions.
@@ -230,7 +233,7 @@ def main():
         maxRegionArea = max(maxRegionArea, regionArea)
     print ("maxRegionArea = ", maxRegionArea)
 
-    regions = []
+    boxList = []
     count = 0
     imageArea = image.shape[0] * image.shape[1]
     for region in skimage.measure.regionprops(label_image):
@@ -249,35 +252,13 @@ def main():
             continue
         count += 1    
         print ("region = %s, %s" % (region.area, region.bbox))
-        regions.append(region)      
+        boxList.append(region.bbox)      
 
     #
     # Label image again.
     #      
 
-    image4 = image.copy()
-    count = 0
-    for region in regions:
-
-        print ("region = %s, %s" % (region.area, region.bbox))
-        
-        #
-        # Draw rectangle around segmented objects.
-        #
-
-        minr, minc, maxr, maxc = region.bbox
-
-        cv2.rectangle (
-            image4,
-            (minc, minr),
-            (maxc, maxr),
-            (0, 255, 0),
-            2)
-        
-        count += 1    
-
-
-    print ("count = ", count)  
+    image4 = labelImage(boxList, image)
     cv2.imwrite(dstFn4, image4)             
 
     #
@@ -289,57 +270,45 @@ def main():
     ax4.axis('off')
 
     #
-    # Transform regions to boxList
+    # Transform boxList to boxFlagList
     #     
 
-    boxList = []
-    for region in regions:
-        boxList.append([region.bbox, False])
+    boxFlagList = []
+    for box in boxList:
+        boxFlagList.append([box, False])
 
     #
-    # merge overlapped boxList.
+    # merge overlapped boxFlagList.
     #    
 
     while True:
-        result = findOverlappedRegions(boxList)
+        result = findOverlappedRegions(boxFlagList)
         if result == None:
             break
 
         (i, j) = result
-        [box1, merged1] = boxList[i]
-        [box2, merged2] = boxList[j]
+        [box1, merged1] = boxFlagList[i]
+        [box2, merged2] = boxFlagList[j]
         box = mergeArea(box1, box2)
         print ("box = %s" % str(box))
-        boxList[i][1] = True
-        boxList[j][1] = True
-        boxList.append([box, False])
+        boxFlagList[i][1] = True
+        boxFlagList[j][1] = True
+        boxFlagList.append([box, False])
 
-    for box in boxList:
+    for box in boxFlagList:
         print(box)
+
+    boxList = []
+    for [box, merged] in boxFlagList:
+        if merged:
+            continue
+        boxList.append(box)        
 
     #
     # Label image finally.
     #    
 
-    image5 = image.copy()
-
-    for [box, merged] in boxList:
-        if merged:
-            continue
-
-        #
-        # Draw rectangle around segmented objects.
-        #
-
-        minr, minc, maxr, maxc = box
-
-        cv2.rectangle (
-            image5,
-            (minc, minr),
-            (maxc, maxr),
-            (0, 255, 0),
-            2)      
-
+    image5 = labelImage(boxList, image)
     cv2.imwrite(dstFn5, image5)                   
 
     #
