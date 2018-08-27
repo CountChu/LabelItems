@@ -57,13 +57,15 @@ def main():
         
         peri = cv2.arcLength(c, True)
         approx = cv2.approxPolyDP(c, 0.02 * peri, True)
+        print ("len(approx) = ", len(approx))
 
         #
         # if the approximated contour has four points, then assume that the
         # contour is a book -- a book is a rectangle and thus has four vertices
         #
         
-        if len(approx) == 4:
+        #if len(approx) == 4:
+        if len(approx) <= 8:
             cv2.drawContours(finalImage, [approx], -1, (0, 255, 0), 4)
             total += 1
             
