@@ -4,6 +4,7 @@
 
 import cv2
 import numpy as np
+import time
 
 class MotionDetector:
 
@@ -29,11 +30,15 @@ class MotionDetector:
         unique, counts = np.unique(self.diffImage, return_counts=True)
         d = dict(zip(unique, counts))
         #print (d)
-        sum = d[0] + d[1] + d[2] + d[3]
-        print (sum)
+        black = d[0] + d[1] + d[2] + d[3]
+        sum = 0
+        for unique, counts in d.items():
+            sum += counts
+        rate = black/sum
+        print (rate)
 
         res = True
-        if sum >= 800000:
+        if rate >= 0.95:
             res = False
 
         return res    
@@ -48,7 +53,10 @@ def calculateDiffImg(t0, t1, t2):
     d2 = cv2.absdiff(t1, t0)
     return cv2.bitwise_and(d1, d2)
 
-cam = cv2.VideoCapture(0)
+#cam = cv2.VideoCapture(0)
+
+fn = 'IMG_4912.m4v'
+cam = cv2.VideoCapture(fn)
 
 winName = "Movement Indicator"
 cv2.namedWindow(winName)
@@ -59,6 +67,7 @@ md.readFirstFrame()
 
 while True:
 
+    time.sleep(0.01)
 
     if not md.isMotion():    
         cv2.putText (
