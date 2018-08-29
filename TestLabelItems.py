@@ -6,7 +6,7 @@ import math
 import cv2
 import matplotlib.pyplot as plt
 
-#import LabelItemsSki    
+import LabelItemsSki    
 import LabelItemsCv2 
 
 def help():
@@ -14,7 +14,10 @@ def help():
     print ("    python TestLabelItems.py IMG_4889.jpg -p -s")    
     print ("        -h, --help") 
     print ("        -p, --process")      
-    print ("        -s, --show")  
+    print ("        -s, --show")
+    print ("        -a, --algorithm")  
+    print ('            a1, Ski')
+    print ('            a2, Cv2')
 
 def main():
 
@@ -33,13 +36,14 @@ def main():
     cfg = {
         'h': False,
         's': False,
-        'p': False}
+        'p': False,
+        'a': 'a1'}
 
     try:
         (opts, args) = getopt.getopt(
             sys.argv[2:], 
-            "hsp",
-            ["help", "show", "process"])
+            "hspa:",
+            ["help", "show", "process", "algorithm"])
     except getopt.GetoptError as err:
         print(str(err))
         help()
@@ -52,11 +56,27 @@ def main():
             cfg['p'] = True
         elif o in ('-s', '--show'):
             cfg['s'] = True
+        elif o in ('-a', '--algorithm'):
+            cfg['a'] = a
         else:
             help()
             sys.exit(0)
 
-    labelItems = LabelItemsCv2.LabelItems(cfg['p'])
+    print (opts)
+
+    if cfg['h']:
+        help()
+        sys.exit(0)     
+
+    if cfg['a'] == 'a1':
+        labelItems = LabelItemsSki.LabelItems(cfg['p'])           
+    elif cfg['a'] == 'a2':
+        labelItems = LabelItemsCv2.LabelItems(cfg['p'])        
+    else:
+        help()
+        sys.exit(0)
+
+
     labelItems.handleFile(fn)
 
     #
@@ -83,7 +103,7 @@ def main():
                 i += 1
                 continue
 
-            dstFni = dstFn + "-" + str(i) + ext
+            dstFni = dstFn + "-" + cfg['a'] + "-" + str(i) + ext
             i += 1
 
             print ("save ", dstFni)
@@ -116,7 +136,7 @@ def main():
                 ax.set_title(title, fontsize = 10)
 
 
-            processFn = dstFn + "-Process" + ext
+            processFn = dstFn + "-" + cfg['a'] +  "-Process" + ext
             print ("processFn = "+processFn)            
             plt.savefig(processFn)    
 
