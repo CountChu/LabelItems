@@ -2,10 +2,12 @@ import sys
 import os
 import getopt
 
+import math
 import cv2
 import matplotlib.pyplot as plt
 
-import LabelItemsSki    
+#import LabelItemsSki    
+import LabelItemsCv2 
 
 def help():
     print ("Usage:")
@@ -54,7 +56,7 @@ def main():
             help()
             sys.exit(0)
 
-    labelItems = LabelItemsSki.LabelItems(cfg['p'])
+    labelItems = LabelItemsCv2.LabelItems(cfg['p'])
     labelItems.handleFile(fn)
 
     #
@@ -96,11 +98,12 @@ def main():
             fontSize = 10
 
             cols = 3
-            rows = round(len(labelItems.processImages) / cols)
+            rows = math.ceil(len(labelItems.processImages) / cols)
             fig, axes = plt.subplots(
                           ncols=cols, 
                           nrows=rows)
 
+            print ("len(axes.flat) = ", len(axes.flat))
             for ax in axes.flat:
                 ax.axis('off')
 
