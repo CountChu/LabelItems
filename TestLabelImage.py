@@ -6,12 +6,12 @@ import math
 import cv2
 import matplotlib.pyplot as plt
 
-import LabelItemsSki    
-import LabelItemsCv2 
+import LabelImageSki    
+import LabelImageCv2 
 
 def help():
     print ("Usage:")
-    print ("    python TestLabelItems.py IMG_4889.jpg -p -s")    
+    print ("    python TestLabelImage.py IMG_4889.jpg -p -s")    
     print ("        -h, --help") 
     print ("        -p, --process")      
     print ("        -s, --show")
@@ -69,15 +69,15 @@ def main():
         sys.exit(0)     
 
     if cfg['a'] == 'a1':
-        labelItems = LabelItemsSki.LabelItems(cfg['p'])           
+        labelImage = LabelImageSki.LabelImage(cfg['p'])           
     elif cfg['a'] == 'a2':
-        labelItems = LabelItemsCv2.LabelItems(cfg['p'])        
+        labelImage = LabelImageCv2.LabelImage(cfg['p'])        
     else:
         help()
         sys.exit(0)
 
 
-    labelItems.handleFile(fn)
+    labelImage.handleFile(fn)
 
     #
     # Handle --process
@@ -95,9 +95,9 @@ def main():
         # Save process images.
         #
 
-        print ("len(processImages) = %d" % len(labelItems.processImages))
+        print ("len(processImages) = %d" % len(labelImage.processImages))
         i = 1
-        for pi in labelItems.processImages:
+        for pi in labelImage.processImages:
             (title, image, canSave) = pi
             if not canSave:
                 i += 1
@@ -118,7 +118,7 @@ def main():
             fontSize = 10
 
             cols = 3
-            rows = math.ceil(len(labelItems.processImages) / cols)
+            rows = math.ceil(len(labelImage.processImages) / cols)
             fig, axes = plt.subplots(
                           ncols=cols, 
                           nrows=rows)
@@ -128,7 +128,7 @@ def main():
                 ax.axis('off')
 
             i = 0
-            for pi in labelItems.processImages:
+            for pi in labelImage.processImages:
                 (title, image, canSave) = pi 
                 ax = axes.flat[i]
                 i += 1

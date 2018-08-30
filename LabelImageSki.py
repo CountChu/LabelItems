@@ -79,7 +79,7 @@ def labelImage(boxList, image):
     return newImage
 
 
-class LabelItems:
+class LabelImage:
 
     keepProcess = False
 
