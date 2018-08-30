@@ -22,7 +22,11 @@ class LabelItems:
         image = cv2.imread(fn)     # numpy.ndarray, ndim = 3
         self.handleImage(image, True)
 
-    processImages = []       
+    processImages = []     
+
+    finalImage = None
+    blackImage = None
+    whiteImage = None
 
     def handleImage(self, image, doTransfer):
 
@@ -76,13 +80,13 @@ class LabelItems:
         # loop over the contours
         #
 
-        finalImage = image.copy()
+        self.finalImage = image.copy()
         
-        blackImage = image.copy()
-        blackImage.fill(0)
+        self.blackImage = image.copy()
+        self.blackImage.fill(0)
         
-        whiteImage = image.copy()
-        whiteImage.fill(255)
+        self.whiteImage = image.copy()
+        self.whiteImage.fill(255)
         
         for c in cnts:
         
@@ -103,9 +107,9 @@ class LabelItems:
             
             #if len(approx) == 4:
             if len(approx) <= 8:
-                cv2.drawContours(finalImage, [approx], -1, (0, 255, 0), 4)
-                cv2.drawContours(blackImage, [approx], -1, (0, 255, 0), 4)
-                cv2.drawContours(whiteImage, [approx], -1, (0, 255, 0), 4)
+                cv2.drawContours(self.finalImage, [approx], -1, (0, 255, 0), 4)
+                cv2.drawContours(self.blackImage, [approx], -1, (0, 255, 0), 4)
+                cv2.drawContours(self.whiteImage, [approx], -1, (0, 255, 0), 4)
                 total += 1
                 
         #    
@@ -115,9 +119,9 @@ class LabelItems:
         print ("I found {0} books in that finalImage".format(total))
 
         if self.keepProcess:        
-            self.processImages.append(('Final', finalImage, True))   
-            self.processImages.append(('Black', blackImage, True))     
-            self.processImages.append(('White', whiteImage, True)) 
+            self.processImages.append(('Final', self.finalImage, True))   
+            self.processImages.append(('Black', self.blackImage, True))     
+            self.processImages.append(('White', self.whiteImage, True)) 
         
 
 
