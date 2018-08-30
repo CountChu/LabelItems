@@ -2,8 +2,10 @@ import cv2
 import time
 
 def main():
-    fn = 'IMG_4912.m4v'
-    camera = cv2.VideoCapture(fn)
+    #fn = 'IMG_4912.m4v'
+    #camera = cv2.VideoCapture(fn)
+
+    camera = cv2.VideoCapture(0)
 
     #   
     # loop over the frames of the video

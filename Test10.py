@@ -3,8 +3,11 @@ import time
 import LabelItemsCv2
 
 def main():
-    fn = 'IMG_4912.m4v'
-    camera = cv2.VideoCapture(fn)
+    
+    #fn = 'IMG_4912.m4v'
+    #cam = cv2.VideoCapture(fn)
+
+    cam = cv2.VideoCapture(0)    
 
     labelItems = LabelItemsCv2.LabelItems(False)
 
@@ -21,7 +24,7 @@ def main():
         # text
         #
 
-        (grabbed, frame) = camera.read()  
+        (grabbed, frame) = cam.read()  
 
 
         #
@@ -61,7 +64,7 @@ def main():
     # cleanup the camera and close any open windows
     #
 
-    camera.release()
+    cam.release()
     cv2.destroyAllWindows()
 
 

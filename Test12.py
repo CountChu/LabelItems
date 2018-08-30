@@ -76,28 +76,77 @@ cv2.namedWindow(winName)
 md = MotionDetector(cam)
 md.readFirstFrame()
 
+saticCount = 0
+lastStatic = False
+isStatic = False
+labelTrigger = False
+
+
 while True:
 
-    time.sleep(0.01)
+    displayedFrame = None
+    #time.sleep(0.01)
+
+    lastStatic = isStatic
 
     if not md.isMotion():    
-        cv2.putText (
-            md.diffImage, 
-            'STATIC',
-            (10, md.diffImage.shape[0] - 10), 
-            cv2.FONT_HERSHEY_SIMPLEX, 
-            10, 
-            (125, 125, 125), 
-            4)   
+
+        saticCount += 1
+
+        if saticCount >= 10:
+            saticCount = 0
+            isStatic = True
+
+    else:
+        isStatic = False
+
+    labelTrigger = False
+    if not lastStatic and isStatic:
+        labelTrigger = True
+
+    title = "lastStatic = %d, isStatic = %d, labelTrigger = %d" % (lastStatic, isStatic, labelTrigger)
+
+    if labelTrigger:       
 
 
         labelItems.handleImage(md.frame, True)
-        #cv2.imshow("Original", md.frame)
-        #cv2.imshow("Final", labelItems.finalImage)
-        #cv2.imshow("Black", labelItems.blackImage)
-        cv2.imshow("White", labelItems.whiteImage)
 
-    cv2.imshow(winName, md.diffImage)
+        displayedFrame = labelItems.finalImage
+
+    if not isStatic:
+        displayedFrame = md.frame
+
+
+    '''
+    cv2.putText (
+        md.diffImage, 
+        'STATIC',
+        (10, md.diffImage.shape[0] - 10), 
+        cv2.FONT_HERSHEY_SIMPLEX, 
+        10, 
+        (125, 125, 125), 
+        4) 
+    '''
+
+    if displayedFrame != None:
+
+        cv2.putText (
+            displayedFrame, 
+            title,
+            (10, displayedFrame.shape[0] - 10), 
+            cv2.FONT_HERSHEY_SIMPLEX, 
+            2, 
+            (0, 255, 0), 
+            4) 
+
+        cv2.imshow("Final", displayedFrame)    
+
+    #cv2.imshow("Original", md.frame)
+    
+    #cv2.imshow("Black", labelItems.blackImage)
+    #cv2.imshow("White", labelItems.whiteImage)
+
+    #cv2.imshow(winName, md.diffImage)
 
     # Read next image
     md.readNextFrame()
