@@ -95,7 +95,11 @@ class LabelImage:
         image = cv2.imread(fn)     # numpy.ndarray, ndim = 3
         self.handleImage(image, True)
 
-    processImages = []    
+    processImages = []  
+
+    finalImage = None
+    blackImage = None
+    whiteImage = None      
 
     def handleImage(self, image, doTransfer):
 
@@ -175,7 +179,6 @@ class LabelImage:
             image4 = labelImage(boxList4, image)     
             self.processImages.append(('Labeled Items Filtered', image4, True))
 
-
         #
         # Transform boxList4 to boxFlagList
         #     
@@ -202,8 +205,8 @@ class LabelImage:
             boxFlagList[j][1] = True
             boxFlagList.append([box, False])
 
-        for box in boxFlagList:
-            print(box)
+        #for box in boxFlagList:
+        #    print(box)
 
         boxList5 = []
         for [box, merged] in boxFlagList:
@@ -216,22 +219,23 @@ class LabelImage:
         #     
 
         if self.keepProcess:
-            image5 = labelImage(boxList5, image)
-            self.processImages.append(('Labeled Items Merged', image5, True))
+            self.finalImage = labelImage(boxList5, image)
+            self.processImages.append(('Labeled Items Merged', self.finalImage, True))
   
 
         #
         # Output regions in a background image.
         #
 
-        image6 = image.copy()
-        image6.fill(0)
-        image6 = labelImage(boxList5, image6)   
+        self.blackImage = image.copy()
+        self.blackImage.fill(0)
+        self.blackImage = labelImage(boxList5, self.blackImage)   
         if self.keepProcess:         
-            self.processImages.append(('Labeled Items Black', image6, True))
+            self.processImages.append(('Labeled Items Black', self.blackImage, True))
 
-        image7 = image.copy()
-        image7.fill(255)
-        image7 = labelImage(boxList5, image7)    
+        self.whiteImage = image.copy()
+        self.whiteImage.fill(255)
+        self.whiteImage = labelImage(boxList5, self.whiteImage)    
         if self.keepProcess:        
-            self.processImages.append(('Labeled Items White', image7, True))
+            self.processImages.append(('Labeled Items White', self.whiteImage, True))
+

@@ -1,13 +1,78 @@
+import sys
+import getopt
+
 import cv2
 import numpy as np
 import time
 
+import LabelImageSki
 import LabelImageCv2
 import MotionDetector
 
+def help():
+    print ("Usage:")
+    print ("    python TestLabelVideo.py")    
+    print ("        -h, --help") 
+    print ("        -d, --debug")      
+    print ("        -a, --algorithm")  
+    print ('            a1, Ski')
+    print ('            a2, Cv2')
+
 def main():
 
-    labelImage = LabelImageCv2.LabelImage(False)
+
+    #
+    # Parse arguments.
+    #
+
+    cfg = {
+        'h': False,
+        'd': False,
+        'a': 'a1'}
+
+    try:
+        (opts, args) = getopt.getopt(
+            sys.argv[1:], 
+            "hda:",
+            ["help", "debug", "algorithm"])
+    except getopt.GetoptError as err:
+        print(str(err))
+        help()
+        sys.exit(0)
+        
+    for o, a in opts:
+        if o in ('-h', '--help'):
+            cfg['h'] = True
+        elif o in ('-d', '--debug'):
+            cfg['d'] = True
+        elif o in ('-a', '--algorithm'):
+            cfg['a'] = a
+        else:
+            help()
+            sys.exit(0)
+
+    print (opts)
+
+    if cfg['h']:
+        help()
+        sys.exit(0)     
+
+    #
+    # Build a LabelImage object.
+    #
+
+    if cfg['a'] == 'a1':
+        labelImage = LabelImageSki.LabelImage(False)           
+    elif cfg['a'] == 'a2':
+        labelImage = LabelImageCv2.LabelImage(False)        
+    else:
+        help()
+        sys.exit(0)
+
+    #
+    # Open camera.
+    #    
+
 
     cam = cv2.VideoCapture(0)
 

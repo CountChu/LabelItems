@@ -27,8 +27,6 @@ def main():
 
     fn = sys.argv[1]
 
-                         
-
     #
     # Parse arguments.
     #
@@ -75,6 +73,10 @@ def main():
     else:
         help()
         sys.exit(0)
+
+    #
+    # Read an image file.
+    #    
 
 
     labelImage.handleFile(fn)

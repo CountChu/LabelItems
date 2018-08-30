@@ -107,9 +107,10 @@ class LabelImage:
             
             #if len(approx) == 4:
             if len(approx) <= 8:
-                cv2.drawContours(self.finalImage, [approx], -1, (0, 255, 0), 4)
-                cv2.drawContours(self.blackImage, [approx], -1, (0, 255, 0), 4)
-                cv2.drawContours(self.whiteImage, [approx], -1, (0, 255, 0), 4)
+                thin = 30
+                cv2.drawContours(self.finalImage, [approx], -1, (0, 255, 0), thin)
+                cv2.drawContours(self.blackImage, [approx], -1, (0, 255, 0), thin)
+                cv2.drawContours(self.whiteImage, [approx], -1, (0, 255, 0), thin)
                 total += 1
                 
         #    
