@@ -20,7 +20,6 @@ def help():
 
 def main():
 
-
     #
     # Parse arguments.
     #
@@ -91,7 +90,6 @@ def main():
     isStatic = False
     labelTrigger = False
 
-
     while True:
 
         displayedFrame = None
@@ -120,7 +118,7 @@ def main():
         if labelTrigger:       
 
 
-            labelImage.handleImage(md.frame, True)
+            labelImage.handleImage(md.frame, False)
 
             displayedFrame = labelImage.finalImage
             whiteFrame = labelImage.whiteImage
@@ -130,20 +128,23 @@ def main():
             whiteFrame = md.frame.copy()
             whiteFrame.fill(255)
 
-        if displayedFrame != None:
+        #displayedFrame = md.frame    
+            
+        if displayedFrame is not None:
 
             cv2.putText (
                 displayedFrame, 
                 title,
                 (10, displayedFrame.shape[0] - 10), 
                 cv2.FONT_HERSHEY_SIMPLEX, 
-                2, 
+                0.5, 
                 (0, 255, 0), 
-                4) 
+                2) 
 
             cv2.imshow("Final", displayedFrame)    
 
-        if whiteFrame != None:    
+        if whiteFrame is not None:    
+        
             cv2.imshow("White", whiteFrame)
 
         #cv2.imshow("Original", md.frame)        
@@ -162,7 +163,6 @@ def main():
             break      
 
     print ("Goodbye")
-
 
 if __name__ == '__main__':
     main()    

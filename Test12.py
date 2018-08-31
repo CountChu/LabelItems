@@ -36,8 +36,12 @@ class MotionDetector:
 
         unique, counts = np.unique(self.diffImage, return_counts=True)
         d = dict(zip(unique, counts))
-        #print (d)
-        black = d[0] + d[1] + d[2] + d[3]
+        
+        black = 0
+        for i in range (0, 4):
+            if i in d.keys():
+                black += d[i]
+                
         sum = 0
         for unique, counts in d.items():
             sum += counts

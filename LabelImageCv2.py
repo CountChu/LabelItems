@@ -88,7 +88,17 @@ class LabelImage:
         self.whiteImage = image.copy()
         self.whiteImage.fill(255)
         
+        sizeList = ""
         for c in cnts:
+            areaSize = cv2.contourArea(c)
+            sizeList += str(areaSize) + ", "
+        print(sizeList)
+        
+        for c in cnts:
+        
+            areaSize = cv2.contourArea(c)
+            if areaSize <= 10000:
+                continue
         
             #print ("c = %s" % c)
          
@@ -106,8 +116,8 @@ class LabelImage:
             #
             
             #if len(approx) == 4:
-            if len(approx) <= 8:
-                thin = 30
+            if len(approx) <= 10:  # 8
+                thin = 5
                 cv2.drawContours(self.finalImage, [approx], -1, (0, 255, 0), thin)
                 cv2.drawContours(self.blackImage, [approx], -1, (0, 255, 0), thin)
                 cv2.drawContours(self.whiteImage, [approx], -1, (0, 255, 0), thin)

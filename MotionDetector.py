@@ -29,8 +29,15 @@ class MotionDetector:
 
         unique, counts = np.unique(self.diffImage, return_counts=True)
         d = dict(zip(unique, counts))
-        #print (d)
-        black = d[0] + d[1] + d[2] + d[3]
+        
+        black = 0
+        i = 0
+        for unique in sorted(d):
+            i += 1
+            black += d[unique]
+            if i == 4:
+                break
+
         sum = 0
         for unique, counts in d.items():
             sum += counts
@@ -38,7 +45,7 @@ class MotionDetector:
         print (rate)
 
         res = True
-        if rate >= 0.95:
+        if rate >= 0.98:
             res = False
 
         return res    
