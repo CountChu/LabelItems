@@ -17,18 +17,41 @@ def main():
 	dst = cv2.warpPerspective(img,M,(300,300))
 
 	fig, axes = plt.subplots(
-					ncols=2,
+					ncols=3,
 					nrows=1)
-	ax0, ax1 = axes.flat
+	ax0, ax1, ax2 = axes.flat
+
+	#
+	# ax0 - Input
+	#
 
 	ax0.imshow(img)
 	ax0.set_title('Input')
 
-	ax1.imshow(dst)
-	ax1.set_title('Output')
+	#
+	# ax1 - Process
+	#
+
+	processedImage = img.copy()
+	
+	for pt in pts1:
+		ax1.scatter(pt[0], pt[1])
+
+	ax1.set_prop_cycle(None)
+	for pt in pts2:
+		ax1.scatter(pt[0], pt[1])
+
+	ax1.imshow(processedImage)
+	ax1.set_title('Process')
+
+	#
+	# ax2 - Output
+	#
+
+	ax2.imshow(dst)
+	ax2.set_title('Output')
 
 	plt.show()
-
 
 if __name__ == '__main__':
     main()    
