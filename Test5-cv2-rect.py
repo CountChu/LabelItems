@@ -4,7 +4,6 @@
 #
 
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
 from PIL import Image
 import numpy as np
 import cv2
@@ -20,6 +19,7 @@ cv2.rectangle(
 	(510,128),
 	(0,255,0),
 	3)
+
 cv2.imwrite('output.jpg', im)
 
 # Display the image

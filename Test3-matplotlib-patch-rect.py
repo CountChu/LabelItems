@@ -8,7 +8,8 @@ import matplotlib.patches as patches
 from PIL import Image
 import numpy as np
 
-im = np.array(Image.open('hubble_friday_12102015.jpg'), dtype=np.uint8)
+im = np.array(Image.open('IMG_4870.jpg'), dtype=np.uint8)
+#im = np.array(Image.open('hubble_friday_12102015.jpg'), dtype=np.uint8)
 
 # Create figure and axes
 fig,ax = plt.subplots(1)
@@ -22,4 +23,5 @@ rect = patches.Rectangle((50,100),40,30,linewidth=1,edgecolor='r',facecolor='non
 # Add the patch to the Axes
 ax.add_patch(rect)
 
+plt.savefig('Output.jpg')
 plt.show()

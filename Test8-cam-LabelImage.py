@@ -1,6 +1,6 @@
 import cv2
 import time
-import LabelItemsCv2
+import LabelImageCv2
 
 def main():
     
@@ -9,7 +9,7 @@ def main():
 
     cam = cv2.VideoCapture(0)    
 
-    labelItems = LabelItemsCv2.LabelItems(False)
+    labelImage = LabelImageCv2.LabelImage(False)
 
     #   
     # loop over the frames of the video
@@ -47,11 +47,11 @@ def main():
             if key == ord("q"):
                 break     
 
-        labelItems.handleImage(frame, True)
+        labelImage.handleImage(frame, True)
         cv2.imshow("Original", frame)
-        cv2.imshow("Final", labelItems.finalImage)
-        cv2.imshow("Black", labelItems.blackImage)
-        cv2.imshow("White", labelItems.whiteImage)
+        cv2.imshow("Final", labelImage.finalImage)
+        cv2.imshow("Black", labelImage.blackImage)
+        cv2.imshow("White", labelImage.whiteImage)
 
         #
         # If the 'q' key is pressed, break from the lop

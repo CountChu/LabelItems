@@ -6,7 +6,7 @@ import cv2
 import numpy as np
 import time
 
-import LabelItemsCv2
+import LabelImageCv2
 
 class MotionDetector:
 
@@ -66,7 +66,7 @@ def calculateDiffImg(t0, t1, t2):
     d2 = cv2.absdiff(t1, t0)
     return cv2.bitwise_and(d1, d2)
 
-labelItems = LabelItemsCv2.LabelItems(False)
+labelImage = LabelImageCv2.LabelImage(False)
 
 cam = cv2.VideoCapture(0)
 
@@ -113,9 +113,9 @@ while True:
     if labelTrigger:       
 
 
-        labelItems.handleImage(md.frame, True)
+        labelImage.handleImage(md.frame, True)
 
-        displayedFrame = labelItems.finalImage
+        displayedFrame = labelImage.finalImage
 
     if not isStatic:
         displayedFrame = md.frame
@@ -147,8 +147,8 @@ while True:
 
     #cv2.imshow("Original", md.frame)
     
-    #cv2.imshow("Black", labelItems.blackImage)
-    #cv2.imshow("White", labelItems.whiteImage)
+    #cv2.imshow("Black", labelImage.blackImage)
+    #cv2.imshow("White", labelImage.whiteImage)
 
     #cv2.imshow(winName, md.diffImage)
 
