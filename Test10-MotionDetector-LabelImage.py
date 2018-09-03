@@ -113,7 +113,7 @@ while True:
     if labelTrigger:       
 
 
-        labelImage.handleImage(md.frame, True)
+        labelImage.handleImage(md.frame, False)
 
         displayedFrame = labelImage.finalImage
 
