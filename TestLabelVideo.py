@@ -57,8 +57,6 @@ def main():
             help()
             sys.exit(0)
 
-
-
     if cfg['h']:
         help()
         sys.exit(0)     

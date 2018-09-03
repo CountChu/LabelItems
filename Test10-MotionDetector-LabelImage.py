@@ -132,7 +132,7 @@ while True:
         4) 
     '''
 
-    if displayedFrame != None:
+    if displayedFrame is not None:
 
         cv2.putText (
             displayedFrame, 
