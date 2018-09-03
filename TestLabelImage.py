@@ -16,8 +16,8 @@ def help():
     print ("        -p, --process")      
     print ("        -s, --show")
     print ("        -a, --algorithm")  
-    print ('            a1, Ski')
-    print ('            a2, Cv2')
+    print ('            a1, Cv2')
+    print ('            a2, Ski')
 
 def main():
 
@@ -67,19 +67,26 @@ def main():
         sys.exit(0)     
 
     if cfg['a'] == 'a1':
-        labelImage = LabelImageSki.LabelImage(cfg['p'])           
+        labelImage = LabelImageCv2.LabelImage(cfg['p'])           
     elif cfg['a'] == 'a2':
-        labelImage = LabelImageCv2.LabelImage(cfg['p'])        
+        labelImage = LabelImageSki.LabelImage(cfg['p'])        
     else:
         help()
         sys.exit(0)
+        
+    #
+    # Find max contour.
+    #
+    
+    image = cv2.imread(fn)
+    maxApprox = labelImage.getMaxApprox(image)
+    transformedImage = labelImage.transform(image, maxApprox)
 
     #
-    # Read an image file.
+    # Label the transformed image.
     #    
 
-
-    labelImage.handleFile(fn)
+    labelImage.handleImage(transformedImage, False)
 
     #
     # Handle --process
