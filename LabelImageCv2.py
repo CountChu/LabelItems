@@ -12,22 +12,13 @@ class LabelImage:
 
     def __init__ (self, keepProcess):
         self.keepProcess = keepProcess    
-
-    def handleFile(self, fn):
-
-        #
-        # Load a JPG image file.
-        #
-
-        image = cv2.imread(fn)     # numpy.ndarray, ndim = 3
-        self.handleImage(image, True)
         
     def getMaxApprox(self, image):
     
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) # BGR to RGB for right color.
 
         if self.keepProcess:
-            self.processImages.append(('Before Orignal', image, False))        
+            self.processImages.append(('1 Before Original', image, False))        
         
         #
         # Convert the image to grayscale, and blur it
@@ -64,7 +55,7 @@ class LabelImage:
 
         if self.keepProcess:
             labeledImage = image.copy()
-            self.processImages.append(('Before Labeled', labeledImage, False))    
+            self.processImages.append(('2 Before Original', labeledImage, False))    
 
         maxC = None
         maxApprox = None
@@ -132,13 +123,13 @@ class LabelImage:
     blackImage = None
     whiteImage = None
 
-    def handleImage(self, image, doTransfer):
+    def handle(self, image, doTransfer):
 
         if doTransfer:
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) # BGR to RGB for right color.
 
         if self.keepProcess:
-            self.processImages.append(('Orignal', image, False))
+            self.processImages.append(('Original', image, False))
 
         #
         # get grayed blured image.

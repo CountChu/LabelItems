@@ -13,11 +13,12 @@ def help():
     print ("Usage:")
     print ("    python TestLabelImage.py IMG_4889.jpg -p -s")    
     print ("        -h, --help") 
-    print ("        -p, --process")      
-    print ("        -s, --show")
     print ("        -a, --algorithm")  
     print ('            a1, Cv2')
     print ('            a2, Ski')
+    print ("        -p, --process")      
+    print ("        -s, --show")
+    print ("        -t, --transform")    
 
 def main():
 
@@ -33,15 +34,16 @@ def main():
 
     cfg = {
         'h': False,
+        'a': 'a1',        
+        'p': False,        
         's': False,
-        'p': False,
-        'a': 'a1'}
+        't': False}
 
     try:
         (opts, args) = getopt.getopt(
             sys.argv[2:], 
-            "hspa:",
-            ["help", "show", "process", "algorithm"])
+            "ha:pst",
+            ["help", "algorithm", "process", "show", "transform"])
     except getopt.GetoptError as err:
         print(str(err))
         help()
@@ -50,12 +52,14 @@ def main():
     for o, a in opts:
         if o in ('-h', '--help'):
             cfg['h'] = True
+        elif o in ('-a', '--algorithm'):
+            cfg['a'] = a
         elif o in ('-p', '--process'):
             cfg['p'] = True
         elif o in ('-s', '--show'):
             cfg['s'] = True
-        elif o in ('-a', '--algorithm'):
-            cfg['a'] = a
+        elif o in ('-t', '--transform'):
+            cfg['t'] = True
         else:
             help()
             sys.exit(0)
@@ -75,18 +79,34 @@ def main():
         sys.exit(0)
         
     #
-    # Find max contour.
+    # Read an image from a file.
     #
     
-    image = cv2.imread(fn)
-    maxApprox = labelImage.getMaxApprox(image)
-    transformedImage = labelImage.transform(image, maxApprox)
+    image = cv2.imread(fn)    
+     
+    if cfg['t']:
+     
+        #
+        # Find max contour.
+        #    
+        
+        maxApprox = labelImage.getMaxApprox(image)
+        transformedImage = labelImage.transform(image, maxApprox)
 
-    #
-    # Label the transformed image.
-    #    
+        #
+        # Label the transformed image.
+        #    
 
-    labelImage.handleImage(transformedImage, False)
+        labelImage.handle(transformedImage, True)
+        
+    else:
+    
+        #
+        # Label the original image.
+        #    
+
+        labelImage.handle(image, True)
+    
 
     #
     # Handle --process
@@ -126,7 +146,7 @@ def main():
         
             fontSize = 10
 
-            cols = 3
+            cols = 4
             rows = math.ceil(len(labelImage.processImages) / cols)
             fig, axes = plt.subplots(
                           ncols=cols, 
