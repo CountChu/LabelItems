@@ -91,13 +91,15 @@ def main():
         #    
         
         maxApprox = labelImage.getMaxApprox(image)
-        transformedImage = labelImage.transform(image, maxApprox)
+        
+        if maxApprox is not None: 
+            transformedImage = labelImage.transform(image, maxApprox)
 
-        #
-        # Label the transformed image.
-        #    
+            #
+            # Label the transformed image.
+            #    
 
-        labelImage.handle(transformedImage, True)
+            labelImage.handle(transformedImage, True)
         
     else:
     
@@ -107,7 +109,6 @@ def main():
 
         labelImage.handle(image, True)
     
-
     #
     # Handle --process
     #

@@ -91,6 +91,10 @@ class LabelImage:
                 total += 1
 
         print ("maxApprox = %s, maxAreaSize = %d" % (maxApprox, maxAreaSize))
+        if maxAreaSize <= 10000:
+            print ("Skip it.")
+            return None
+        
         if self.keepProcess:
             thin = 20    
             cv2.drawContours(labeledImage, [maxApprox], -1, (0, 255, 0), thin)
