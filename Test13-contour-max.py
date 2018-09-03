@@ -1,8 +1,4 @@
 #
-# https://pythontips.com/2015/03/11/a-guide-to-finding-books-in-images-using-python-and-opencv/
-#
-
-#
 # import the necessary packages
 #
 
