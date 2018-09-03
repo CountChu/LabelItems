@@ -85,13 +85,13 @@ def main():
     image = cv2.imread(fn)    
      
     if cfg['t']:
-     
+
         #
         # Find max contour.
-        #    
-        
+        #
+
         maxApprox = labelImage.getMaxApprox(image)
-        
+
         if maxApprox is not None: 
             transformedImage = labelImage.transform(image, maxApprox)
 

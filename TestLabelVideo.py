@@ -14,11 +14,14 @@ def help():
     print ("    python TestLabelVideo.py")    
     print ("        -h, --help") 
     print ("        -d, --debug")
-    print ("        -s, --save")      
-    print ("            output.avi")
+    print ("        -f, --file")
+    print ("            input.avi")
     print ("        -a, --algorithm")  
     print ('            a1, Cv2')
     print ('            a2, Ski')
+    print ("        -o, --output")      
+    print ("            output.avi")
+    print ("        -t, --transform")  
 
 def main():
 
@@ -29,14 +32,16 @@ def main():
     cfg = {
         'h': False,
         'd': False,
-        's': '',
-        'a': 'a1'}
+        'f': '',
+        'a': 'a1',        
+        'o': '',
+        't': False}
 
     try:
         (opts, args) = getopt.getopt(
             sys.argv[1:], 
-            'hds:a:',
-            ['help', 'debug', 'save', 'algorithm'])
+            'hdf:a:o:t',
+            ['help', 'debug', 'file', 'algorithm', 'output', 'transform'])
     except getopt.GetoptError as err:
         print(str(err))
         help()
@@ -49,10 +54,14 @@ def main():
             cfg['h'] = True
         elif o in ('-d', '--debug'):
             cfg['d'] = True
-        elif o in ('-s', '--save'):            
-            cfg['s'] = a
+        elif o in ('-f', '--file'):
+            cfg['f'] = a
         elif o in ('-a', '--algorithm'):
             cfg['a'] = a
+        elif o in ('-o', '--output'):            
+            cfg['o'] = a
+        elif o in ('-t', '--transform'):            
+            cfg['t'] = True
         else:
             help()
             sys.exit(0)
@@ -74,14 +83,16 @@ def main():
         sys.exit(0)
 
     #
-    # Open camera.
+    # Open file or camera.
     #    
+    
+    if cfg['f'] != '':
+        cam = cv2.VideoCapture(cfg['f'])
+    else:
+        cam = cv2.VideoCapture(0)
 
-
-    cam = cv2.VideoCapture(0)
-
-    if cfg['s'] != '':
-        outputFn = cfg['s']
+    if cfg['o'] != '':
+        outputFn = cfg['o']
         (grabbed, frame) = cam.read()
         (fheight, fwidth, _) = frame.shape
         print (fwidth , fheight)
@@ -93,7 +104,6 @@ def main():
 
     winName = "Movement Indicator"
     cv2.namedWindow(winName)
-
 
     md = MotionDetector.MotionDetector(cam)
     md.readFirstFrame()
@@ -128,10 +138,9 @@ def main():
 
         title = "lastStatic = %d, isStatic = %d, labelTrigger = %d" % (lastStatic, isStatic, labelTrigger)
 
-        if labelTrigger:       
+        if labelTrigger:
 
-
-            labelImage.handleImage(md.frame, False)
+            labelImage.handle(md.frame, False)
 
             displayedFrame = labelImage.finalImage
             whiteFrame = labelImage.whiteImage
@@ -140,8 +149,6 @@ def main():
             displayedFrame = md.frame
             whiteFrame = md.frame.copy()
             whiteFrame.fill(255)
-
-        #displayedFrame = md.frame    
             
         if displayedFrame is not None:
 
@@ -156,11 +163,10 @@ def main():
 
             cv2.imshow("Final", displayedFrame)   
 
-            if cfg['s']:
+            if cfg['o']:
                 out.write(displayedFrame) 
 
-        if whiteFrame is not None:    
-        
+        if whiteFrame is not None:
             cv2.imshow("White", whiteFrame)
 
         #cv2.imshow("Original", md.frame)        
@@ -178,7 +184,7 @@ def main():
             cv2.destroyWindow(winName)
             break      
 
-    if cfg['s']:
+    if cfg['o']:
         out.release()
 
 
