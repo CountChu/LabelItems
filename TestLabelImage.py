@@ -144,13 +144,11 @@ def main():
                 ax.imshow(image)
                 ax.set_title(title, fontsize = 10)
 
-
             processFn = dstFn + "-" + cfg['a'] +  "-Process" + ext
             print ("processFn = "+processFn)            
             plt.savefig(processFn)    
 
             plt.show()
-
 
 if __name__ == '__main__':
   main()
