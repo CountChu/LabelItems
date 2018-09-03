@@ -11,7 +11,14 @@ class LabelImage:
     keepProcess = False
 
     def __init__ (self, keepProcess):
-        self.keepProcess = keepProcess    
+        self.keepProcess = keepProcess   
+
+    def getProcessImage(self, foundTitle):
+        for pi in self.processImages:
+            (title, image, canSave) = pi
+            if title == foundTitle:
+                return image
+        return None
         
     def getMaxApprox(self, image):
     
@@ -31,8 +38,8 @@ class LabelImage:
         # detect edges in the gray image
         #
 
-        edgedImage = cv2.Canny(grayImage, 10, 250) 
-        #edgedImage = cv2.Canny(grayImage, 100, 250) 
+        #edgedImage = cv2.Canny(grayImage, 10, 250) 
+        edgedImage = cv2.Canny(grayImage, 200, 250) 
 
         #
         # construct and apply a closing kernel to 'close' gaps between 'white'
@@ -88,18 +95,20 @@ class LabelImage:
                 print ("It is candidated. areaSize = %d" % areaSize)
                 if self.keepProcess:
                     thin = 5
-                    cv2.drawContours(labeledImage, [approx], -1, (0, 255, 0), thin)
+                    cv2.drawContours(labeledImage, [approx], -1, (0, 0, 255), thin)
                 total += 1
-
-        print ("maxApprox = %s, maxAreaSize = %d" % (maxApprox, maxAreaSize))
-        if maxAreaSize <= 10000:
-            print ("Skip it.")
-            return None
         
         if self.keepProcess:
-            thin = 20    
-            cv2.drawContours(labeledImage, [maxApprox], -1, (0, 255, 0), thin)
+            if maxApprox is not None:
+                thin = 20    
+                cv2.drawContours(labeledImage, [maxApprox], -1, (0, 255, 0), thin)
 
+        print ("maxApprox = %s, maxAreaSize = %d" % (maxApprox, maxAreaSize))
+        #if maxAreaSize <= 10000:
+        if maxAreaSize <= 30000:
+            print ("Skip it.")
+            return None
+            
         return maxApprox
 
     def transform(self, image, maxApprox):

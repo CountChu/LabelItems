@@ -47,7 +47,7 @@ def main():
             if key == ord("q"):
                 break     
 
-        labelImage.handleImage(frame, True)
+        labelImage.handle(frame, True)
         cv2.imshow("Original", frame)
         cv2.imshow("Final", labelImage.finalImage)
         cv2.imshow("Black", labelImage.blackImage)

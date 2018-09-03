@@ -42,7 +42,7 @@ class MotionDetector:
         for unique, counts in d.items():
             sum += counts
         rate = black/sum
-        print (rate)
+        #print ("rate = %f" % rate)
 
         res = True
         if rate >= 0.98:

@@ -75,9 +75,9 @@ def main():
     #
 
     if cfg['a'] == 'a1':
-        labelImage = LabelImageCv2.LabelImage(False)           
+        labelImage = LabelImageCv2.LabelImage(True)           
     elif cfg['a'] == 'a2':
-        labelImage = LabelImageSki.LabelImage(False)        
+        labelImage = LabelImageSki.LabelImage(True)        
     else:
         help()
         sys.exit(0)
@@ -115,6 +115,8 @@ def main():
 
     while True:
 
+        labeledImage = None
+        transformedImage = None
         displayedFrame = None
         whiteFrame = None 
         #time.sleep(0.01)
@@ -138,17 +140,48 @@ def main():
 
         title = "lastStatic = %d, isStatic = %d, labelTrigger = %d" % (lastStatic, isStatic, labelTrigger)
 
+        labelImage.processImages = []
         if labelTrigger:
+        
+            if cfg['t']:
+            
+                #
+                # Find max contour.
+                #
 
-            labelImage.handle(md.frame, False)
+                maxApprox = labelImage.getMaxApprox(md.frame)
+                labeledImage = labelImage.getProcessImage('2 Before Original')
+                
+                '''
+                if maxApprox is not None: 
+                    transformedImage = labelImage.transform(md.frame, maxApprox)
 
-            displayedFrame = labelImage.finalImage
-            whiteFrame = labelImage.whiteImage
+                    #
+                    # Label the transformed image.
+                    #    
+
+                    #labelImage.handle(transformedImage, True)
+                    #displayedFrame = labelImage.finalImage
+                    #whiteFrame = labelImage.whiteImage
+                '''
+                    
+            else:
+
+                labelImage.handle(md.frame, False)
+                displayedFrame = labelImage.finalImage
+                whiteFrame = labelImage.whiteImage
 
         if not isStatic:
             displayedFrame = md.frame
             whiteFrame = md.frame.copy()
             whiteFrame.fill(255)
+            
+        if cfg['t']:    
+            if transformedImage is not None:
+                cv2.imshow("Transform", transformedImage)   
+                
+        if labeledImage is not None:
+            cv2.imshow("2 Before Original", labeledImage)  
             
         if displayedFrame is not None:
 
