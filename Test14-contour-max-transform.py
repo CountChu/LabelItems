@@ -47,13 +47,7 @@ def main():
     #
 
     finalImage = image.copy()
-    
-    blackImage = image.copy()
-    blackImage.fill(0)
-    
-    whiteImage = image.copy()
-    whiteImage.fill(255)
-    
+        
     maxC = None
     maxApprox = None
     maxAreaSize = 0
@@ -84,15 +78,11 @@ def main():
             print ("It is candidated. areaSize = %d" % areaSize)
             thin = 5
             cv2.drawContours(finalImage, [approx], -1, (0, 255, 0), thin)
-            cv2.drawContours(blackImage, [approx], -1, (0, 255, 0), thin)
-            cv2.drawContours(whiteImage, [approx], -1, (0, 255, 0), thin)
             total += 1
             
     print ("maxApprox = %s, maxAreaSize = %d" % (maxApprox, maxAreaSize))
     thin = 20    
     cv2.drawContours(finalImage, [maxApprox], -1, (0, 255, 0), thin)
-    cv2.drawContours(blackImage, [maxApprox], -1, (0, 255, 0), thin)
-    cv2.drawContours(whiteImage, [maxApprox], -1, (0, 255, 0), thin)
     
     #
     # Perspective transform.
@@ -114,24 +104,22 @@ def main():
     print ("I found {0} books in that finalImage".format(total))
     
     #
-    # Save finalImage, blackImage, whiteImage
+    # Save finalImage
     #
     
     cv2.imwrite('finalImage.jpg', finalImage) 
-    cv2.imwrite('blackImage.jpg', blackImage)    
-    cv2.imwrite('whiteImage.jpg', whiteImage) 
 
     #
-    # Display image, edgedImage, closedImage, finalImage, blackImage, whiteImage
+    # Display image, edgedImage, closedImage, finalImage, transformedImage
     #
 
 
     fig, axes = plt.subplots(
-                  ncols=4, 
+                  ncols=3, 
                   nrows=2,
                   figsize=(10, 6))
 
-    ax0, ax1, ax2, ax3, ax4, ax5, ax6, ax7 = axes.flat
+    ax0, ax1, ax2, ax3, ax4, ax5 = axes.flat
 
     fontSize = 10
 
@@ -155,15 +143,7 @@ def main():
     ax4.set_title('Transform', fontsize=fontSize)
     ax4.axis('off')     
 
-    ax5.imshow(blackImage)
-    ax5.set_title('Black', fontsize=fontSize)
-    ax5.axis('off')   
-
-    ax6.imshow(whiteImage)
-    ax6.set_title('White', fontsize=fontSize)
-    ax6.axis('off')     
-    
-    ax7.axis('off')
+    ax5.axis('off')
 
     plt.show()
 
