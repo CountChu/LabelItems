@@ -3,10 +3,12 @@ import time
 import LabelImageCv2
 
 def main():
-    
+
     #fn = 'projector.avi'    
-    fn = 'IMG_5081.TRIM.OUT.MP4'
-    cam = cv2.VideoCapture(fn)
+    #fn = 'IMG_5081.TRIM.OUT.MP4'
+    #cam = cv2.VideoCapture(fn)
+
+    cam = cv2.VideoCapture(0)
 
     labelImage = LabelImageCv2.LabelImage(True)
 
@@ -17,7 +19,7 @@ def main():
     maxApprox = None
     while True:
     
-        time.sleep(0.01)    
+        time.sleep(0.1)    
 
         #
         # Read a key.
@@ -65,6 +67,7 @@ def main():
             
             labelImage.handle(transformedImage, False)
             cv2.imshow("Final", labelImage.finalImage)
+            cv2.imshow("White", labelImage.whiteImage)
                 
         '''
         labelImage.handle(frame, True)

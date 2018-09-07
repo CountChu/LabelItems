@@ -105,7 +105,7 @@ class LabelImage:
 
         print ("maxApprox = %s, maxAreaSize = %d" % (maxApprox, maxAreaSize))
         #if maxAreaSize <= 10000:
-        if maxAreaSize <= 30000:
+        if maxAreaSize <= 20000:
             print ("Skip it.")
             return None
             
