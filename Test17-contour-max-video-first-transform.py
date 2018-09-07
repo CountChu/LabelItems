@@ -17,7 +17,7 @@ def main():
     maxApprox = None
     while True:
     
-        time.sleep(0.1)    
+        time.sleep(0.01)    
 
         #
         # Read a key.
@@ -62,6 +62,9 @@ def main():
             
             transformedImage = labelImage.transform(frame, maxApprox, 640, 480)
             cv2.imshow("Transformed", transformedImage)
+            
+            labelImage.handle(transformedImage, False)
+            cv2.imshow("Final", labelImage.finalImage)
                 
         '''
         labelImage.handle(frame, True)
