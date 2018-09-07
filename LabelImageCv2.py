@@ -111,7 +111,7 @@ class LabelImage:
             
         return maxApprox
 
-    def transform(self, image, maxApprox):
+    def transform(self, image, maxApprox, width, height):
 
         thin = 20    
 
@@ -121,12 +121,12 @@ class LabelImage:
 
         pts1 = np.float32([maxApprox[0], maxApprox[1], maxApprox[2], maxApprox[3]])
         pts2 = np.float32([
-                [300,0],
-                [0,0],
-                [0,300],
-                [300,300]])
+                [width ,0],
+                [0, 0],
+                [0, height],
+                [width, height]])
         M = cv2.getPerspectiveTransform(pts1, pts2)
-        transformedImage = cv2.warpPerspective(image, M, (300, 300))
+        transformedImage = cv2.warpPerspective(image, M, (width, height))
         
         return transformedImage
 

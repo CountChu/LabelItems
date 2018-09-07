@@ -56,9 +56,12 @@ def main():
             
         if maxApprox is not None:    
             thin = 20 
-            backgroundFrame = frame.copy()
-            cv2.drawContours(backgroundFrame, [maxApprox], -1, (0, 255, 0), thin)
-            cv2.imshow("Background", backgroundFrame)
+            backgroundImage = frame.copy()
+            cv2.drawContours(backgroundImage, [maxApprox], -1, (0, 255, 0), thin)
+            cv2.imshow("Background", backgroundImage)
+            
+            transformedImage = labelImage.transform(frame, maxApprox, 640, 480)
+            cv2.imshow("Transformed", transformedImage)
                 
         '''
         labelImage.handle(frame, True)
