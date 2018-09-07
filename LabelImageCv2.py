@@ -38,8 +38,8 @@ class LabelImage:
         # detect edges in the gray image
         #
 
-        #edgedImage = cv2.Canny(grayImage, 10, 250) 
-        edgedImage = cv2.Canny(grayImage, 200, 250) 
+        edgedImage = cv2.Canny(grayImage, 10, 250) 
+        #edgedImage = cv2.Canny(grayImage, 200, 250) 
 
         #
         # construct and apply a closing kernel to 'close' gaps between 'white'
