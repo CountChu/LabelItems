@@ -113,6 +113,9 @@ def main():
     isStatic = False
     labelTrigger = False
 
+    if cfg['t']:
+        maxApprox = None    
+        
     while True:
 
         labeledImage = None
@@ -120,6 +123,15 @@ def main():
         displayedFrame = None
         whiteFrame = None 
         #time.sleep(0.01)
+        
+        if cfg['t']:
+        
+            if maxApprox is None:        
+                labelImage.processImages = []
+                maxApprox = labelImage.getMaxApprox(md.frame)
+        
+            if maxApprox is not None:    
+                md.frame = labelImage.transform(md.frame, maxApprox, 640, 480)
 
         lastStatic = isStatic
 
@@ -143,33 +155,9 @@ def main():
         labelImage.processImages = []
         if labelTrigger:
         
-            if cfg['t']:
-            
-                #
-                # Find max contour.
-                #
-
-                maxApprox = labelImage.getMaxApprox(md.frame)
-                labeledImage = labelImage.getProcessImage('2 Before Original')
-                
-                '''
-                if maxApprox is not None: 
-                    transformedImage = labelImage.transform(md.frame, maxApprox)
-
-                    #
-                    # Label the transformed image.
-                    #    
-
-                    #labelImage.handle(transformedImage, True)
-                    #displayedFrame = labelImage.finalImage
-                    #whiteFrame = labelImage.whiteImage
-                '''
-                    
-            else:
-
-                labelImage.handle(md.frame, False)
-                displayedFrame = labelImage.finalImage
-                whiteFrame = labelImage.whiteImage
+            labelImage.handle(md.frame, False)
+            displayedFrame = labelImage.finalImage
+            whiteFrame = labelImage.whiteImage
 
         if not isStatic:
             displayedFrame = md.frame

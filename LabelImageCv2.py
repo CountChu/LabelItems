@@ -120,6 +120,7 @@ class LabelImage:
         #
 
         pts1 = np.float32([maxApprox[0], maxApprox[1], maxApprox[2], maxApprox[3]])
+        print("pts1 = ", pts1)
         pts2 = np.float32([
                 [width ,0],
                 [0, 0],
@@ -225,7 +226,7 @@ class LabelImage:
             
             #if len(approx) == 4:
             if len(approx) <= 10:  # 8
-                thin = 5
+                thin = 10 # 5
                 cv2.drawContours(self.finalImage, [approx], -1, (0, 255, 0), thin)
                 cv2.drawContours(self.blackImage, [approx], -1, (0, 255, 0), thin)
                 cv2.drawContours(self.whiteImage, [approx], -1, (0, 255, 0), thin)
