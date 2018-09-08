@@ -263,7 +263,4 @@ class LabelImage:
         if self.keepProcess:        
             self.processImages.append(('Final', self.finalImage, True))   
             self.processImages.append(('Black', self.blackImage, True))     
-            self.processImages.append(('White', self.whiteImage, True)) 
-        
-
-
+            self.processImages.append(('White', self.whiteImage, True))

@@ -116,6 +116,8 @@ def main():
     if cfg['t']:
         maxApprox = None    
         
+    seq = 0    
+    writeSeq = 0
     while True:
 
         labeledImage = None
@@ -132,6 +134,11 @@ def main():
         
             if maxApprox is not None:    
                 md.frame = labelImage.transform(md.frame, maxApprox, 640, 480)
+                
+        if cfg['o']:
+            out.write(md.frame) 
+            print('Write frame ', writeSeq)
+            writeSeq += 1                
 
         lastStatic = isStatic
 
@@ -184,8 +191,12 @@ def main():
 
             cv2.imshow("Final", displayedFrame)   
 
+            '''
             if cfg['o']:
                 out.write(displayedFrame) 
+                print('Write frame ', writeSeq)
+                writeSeq += 1
+            '''    
 
         if whiteFrame is not None:
             cv2.imshow("White", whiteFrame)
@@ -199,8 +210,9 @@ def main():
         #
 
         md.readNextFrame()
+        seq += 1
 
-        key = cv2.waitKey(50) # wait 50 milliseconds before each frame is written.
+        key = cv2.waitKey(1) # wait 50 milliseconds before each frame is written.
         if key == 27:                       # ESC
             cv2.destroyWindow(winName)
             break      
@@ -208,8 +220,9 @@ def main():
     if cfg['o']:
         out.release()
 
-
-    print ("Goodbye")
+    print('seq = ', seq)
+    print('writeSeq = ', writeSeq)
+    print("Goodbye")
 
 if __name__ == '__main__':
     main()    
