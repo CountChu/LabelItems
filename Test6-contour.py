@@ -16,8 +16,8 @@ def main():
     # load the image, convert it to grayscale, and blur it
     #
 
-    fn = "books2.jpg"
-    #fn = "IMG_4870.jpg"
+    #fn = "books2.jpg"
+    fn = "IMG_4870.jpg"
     #fn = "IMG_4871.jpg"    
     #fn = "IMG_4889.jpg"
     image = cv2.imread(fn)

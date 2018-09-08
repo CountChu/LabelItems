@@ -1,4 +1,5 @@
 import numpy as np
+import cv2
 
 def getNorms(quadrangle):
     norms = np.linalg.norm(quadrangle, axis=1)
@@ -39,3 +40,37 @@ def getOrderedPoints(quadrangle):
     rightBottom = quadrangle[idxRightBottom]
     
     return np.array([leftTop, leftBottom, rightTop, rightBottom])
+    
+def resizeContour(c, factor, image=None):
+
+    #
+    # find the center of the contour (moments() or getBoundingRect())
+    #
+    
+    m = cv2.moments(c)
+    cx = int(m['m10']/m['m00'])
+    cy = int(m['m01']/m['m00'])
+    print (cx, cy) 
+    if image is not None:
+        cv2.circle(image, (cx, cy), 1, (0, 255, 0), 8)     
+
+    #
+    # subtract it from each point in the contour
+    #
+    
+    diff = c - [cx, cy]
+    print("diff = ", diff)        
+    
+    #
+    # multiply contour points x,y by a scale factor
+    #
+    
+    diff = diff * factor
+    diff = diff.astype(int)
+    
+    # add the center again to each point        
+    
+    c = diff + [cx, cy]
+    print(c)
+    
+    return c

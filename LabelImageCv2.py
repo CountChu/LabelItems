@@ -55,7 +55,10 @@ class LabelImage:
         # total number of books found
         #
 
-        (_, cnts, _) = cv2.findContours(closedImage.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        (_, cnts, _) = cv2.findContours(
+                        closedImage.copy(), 
+                        cv2.RETR_EXTERNAL, 
+                        cv2.CHAIN_APPROX_SIMPLE)
         total = 0
 
         #

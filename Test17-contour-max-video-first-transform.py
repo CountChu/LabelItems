@@ -4,11 +4,11 @@ import LabelImageCv2
 
 def main():
 
-    #fn = 'projector.avi'    
-    #fn = 'IMG_5081.TRIM.OUT.MP4'
-    #cam = cv2.VideoCapture(fn)
+    fn = 'projector.avi'    
+    fn = 'IMG_5081.TRIM.OUT.MP4'
+    cam = cv2.VideoCapture(fn)
 
-    cam = cv2.VideoCapture(0)
+    #cam = cv2.VideoCapture(0)
 
     labelImage = LabelImageCv2.LabelImage(True)
 
