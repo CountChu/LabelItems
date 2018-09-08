@@ -5,6 +5,7 @@
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
+import Util
 
 class LabelImage:
 
@@ -110,21 +111,35 @@ class LabelImage:
             return None
             
         return maxApprox
-
+        
     def transform(self, image, maxApprox, width, height):
 
         thin = 20    
 
         #
+        # Get ordered points: leftTop, leftBottom, rightTop, rightBottom
+        #
+        
+        quadrangle = np.array([
+                        maxApprox[0][0], 
+                        maxApprox[1][0], 
+                        maxApprox[2][0], 
+                        maxApprox[3][0]
+                        ])
+        print("quadrangle = ", quadrangle) 
+        points = Util.getOrderedPoints(quadrangle)
+        print("points = ", points) 
+        
+        #
         # Perspective transform.
         #
 
-        pts1 = np.float32([maxApprox[0], maxApprox[1], maxApprox[2], maxApprox[3]])
+        pts1 = np.float32([[points[0]], [points[1]], [points[2]], [points[3]]])
         print("pts1 = ", pts1)
         pts2 = np.float32([
-                [width ,0],
                 [0, 0],
                 [0, height],
+                [width ,0],
                 [width, height]])
         M = cv2.getPerspectiveTransform(pts1, pts2)
         transformedImage = cv2.warpPerspective(image, M, (width, height))
