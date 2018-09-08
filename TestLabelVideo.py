@@ -165,6 +165,16 @@ def main():
             labelImage.handle(md.frame, False)
             displayedFrame = labelImage.finalImage
             whiteFrame = labelImage.whiteImage
+            
+            if labelImage.hasLabel:
+                cv2.putText (
+                    whiteFrame, 
+                    '$10.5',
+                    (20, 100), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 
+                    1.5, 
+                    (255, 0, 0), 
+                    4)             
 
         if not isStatic:
             displayedFrame = md.frame
@@ -199,7 +209,8 @@ def main():
             '''    
 
         if whiteFrame is not None:
-            cv2.imshow("White", whiteFrame)
+            
+            cv2.imshow("White", whiteFrame)                
 
         #cv2.imshow("Original", md.frame)        
         #cv2.imshow("Black", labelImage.blackImage)

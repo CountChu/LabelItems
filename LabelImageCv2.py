@@ -155,8 +155,11 @@ class LabelImage:
     finalImage = None
     blackImage = None
     whiteImage = None
+    hasLabel = False
 
     def handle(self, image, doTransfer):
+    
+        self.hasLabel = False
 
         if doTransfer:
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) # BGR to RGB for right color.
@@ -252,6 +255,7 @@ class LabelImage:
                 cv2.drawContours(self.finalImage, [approx], -1, (0, 255, 0), thin)
                 cv2.drawContours(self.blackImage, [approx], -1, (0, 255, 0), thin)
                 cv2.drawContours(self.whiteImage, [approx], -1, (0, 255, 0), thin)
+                self.hasLabel = True
                 total += 1
                 
         #    
