@@ -227,7 +227,11 @@ class LabelImage:
             if areaSize <= 10000:
                 continue
         
-            #print ("c = %s" % c)
+            #
+            # Resize contour
+            #
+            
+            c = Util.resizeContour(c, 1.3)
          
             #
             # approximate the contour

@@ -65,6 +65,11 @@ def main():
     for c in cnts:
     
         print ("c = %s" % c)
+        
+        #
+        # Resize contour
+        #
+        
         c = Util.resizeContour(c, 1.2, finalImage)
      
         #
