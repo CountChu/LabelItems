@@ -27,11 +27,11 @@ def getOrderedPoints(quadrangle):
     idx1 = idxList[1]
     p = quadrangle[idx0]
     if p[0] < p[1]:
-        idxRightTop = idx0
-        idxLeftBottom = idx1
-    else:
         idxRightTop = idx1
         idxLeftBottom = idx0
+    else:
+        idxRightTop = idx0
+        idxLeftBottom = idx1
         
     leftTop = quadrangle[idxLeftTop]
     leftBottom = quadrangle[idxLeftBottom]
